@@ -13,8 +13,8 @@ local Mouse = LocalPlayer:GetMouse()
 local CurrentCamera = Workspace.CurrentCamera
 
 local DaHoodSettings = {
-    SilentAim = true,
-    AimLock = true,
+    SilentAim = false,
+    AimLock = false,
     Prediction = 0.165,
     AimLockKeybind = Enum.KeyCode.E
 }
