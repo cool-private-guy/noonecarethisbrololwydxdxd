@@ -1,4 +1,4 @@
-local Aiming = loadstring(game:HttpGet("https://raw.githubusercontent.com/Stefanuk12/ROBLOX/master/Universal/Aiming/Module.lua"))()
+local Aiming = loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/module.lua"))()
 Aiming.TeamCheck(false)
 
 -- // Services
@@ -29,6 +29,7 @@ if DaHoodSettings.AutoPrediction == true then
     local split = string.split(pingvalue,'(')
     local ping = tonumber(split[1])
     local PingNumber = pingValue[1]
+    
     if ping < 300 then
         DaHoodSettings.Prediction = 0.610
     elseif ping < 290 then
