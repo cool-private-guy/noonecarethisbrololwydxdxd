@@ -207,6 +207,10 @@ RService.RenderStepped:Connect(function()
 	end
 end)
 
+-- // Esp Module
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/espmodule.lua", true))()
+
 -- // Silent Aim
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/base.lua", true))()
@@ -242,4 +246,68 @@ end)
 
 L_1_:AddDropdown("Hitbox", {"Head", "UpperTorso", "HumanoidRootPart", "LowerTorso", "LeftUpperLeg", "RightUpperLeg", "LeftLowerLeg", "RightLowerLeg", "LeftFoot", "RightFoot"}, "HumanoidRootPart", false, function(bro4)
     getgenv().AimPart = bro4
+end)
+
+L_1_:AddTextbox("Aimlock Prediction", "", function(bro5)
+    getgenv().PredictionVelocity = bro5
+end)
+
+L_2_:AddTextbox("Aimlock Key", "q", function(bro6)
+    getgenv().AimlockKey = bro6
+end)
+
+L_2_:AddSlider("Aim Radius", 0, 1, 30, decimals, function(bro7)
+    getgenv().AimRadius = bro7
+end)
+
+L_3_:AddToggle("Enabled", false, function(bro8)
+    DaHoodSettings.SilentAim = bro8
+end):AddKeybind("None")
+
+L_3_:AddToggle("Visible Check", false, function(bro9)
+    Aiming.VisibleCheck = bro9
+end)
+
+L_3_:AddToggle("K0d Check", false, function(bro10)
+    Aiming.Check().K0d = bro10
+end)
+
+L_3_:AddToggle("Grabbed Check", false, function(bro11)
+    Aiming.Check().Grabbed = bro11
+end)
+
+L_4_:AddToggle("Show Fov", false, function(bro12)
+    Aiming.ShowFOV = bro12
+end):AddKeybind("None")
+
+L_4_:AddToggle("Filled", false, function(bro13)
+    Aiming.Filled = bro13
+end)
+
+L_4_:AddDropdown("Shape", {"Custom", "Circle", "Square"}, "Custom", false, function(v)
+    if v == "Custom" then
+        Aiming.FOV = 30
+        Aiming.FOVSides = 100
+        Aiming.Transparency = 0.3
+    elseif v == "Circle" then
+        Aiming.FOV = 30
+        Aiming.FOVSides = 100
+        Aiming.Transparency = 0.3
+    elseif v == "Square" then
+        Aiming.FOV = 30
+        Aiming.FOVSides = 14
+        Aiming.Transparency = 0.3
+    end
+end)
+
+L_4_:AddSlider("Size", 1, 30, 300, decimals, function(bro14)
+    Aiming.FOV = bro14
+end)
+
+L_4_:AddSlider("Round", 1, 40, 40, decimals, function(bro15)
+    Aiming.FOVSides = bro15
+end)
+
+L_4_:AddSlider("Transparency", 0, 0.2, 1, 10, function(bro16)
+    Aiming.Transparency = bro16
 end)
