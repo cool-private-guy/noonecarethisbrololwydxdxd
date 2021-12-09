@@ -157,9 +157,7 @@ RService.RenderStepped:Connect(function()
 		else
 			getgenv().AimPart = getgenv().OldAimPart
 		end
-    elseif AimlockTarget.Character.Humanoid.FloorMaterial not Enum.Material.Air then
-            getgenv().CheckIfJumped = false
-	end
+    end
 	if getgenv().AutoPrediction == true then
 		wait(5.2)
 		local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
@@ -276,6 +274,10 @@ L_3_:AddToggle("Grabbed Check", false, function(bro11)
     Aiming.Check().Grabbed = bro11
 end)
 
+L_3_:AddTextbox("Bullet Prediction", "", function(prediction)
+    DaHoodSettings.Prediction = prediction
+end)
+
 L_4_:AddToggle("Show Fov", false, function(bro12)
     Aiming.ShowFOV = bro12
 end):AddKeybind("None")
@@ -332,7 +334,11 @@ L_5_:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
     ESP.AttachShift = bro21
 end)
 
-local whitelist = L_6_:AddTextbox("Player Username", function()
+L_5_:AddColorpicker("Esp Color", Color3.fromRGB(231, 84, 128), function(espcolor)
+	ESP.Color = espcolor 
+end)
+
+local whitelist = L_6_:AddTextbox("Player Username", "", function()
 end)
 
 L_6_:AddButton("Add Whitelist", function()
