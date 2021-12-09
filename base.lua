@@ -1,4 +1,4 @@
-local Aiming = loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/module.lua"))()
+local Aiming = loadstring(game:HttpGet("https://raw.githubusercontent.com/wydkidwydkid4345/noonecarethisbrololwydxdxd/main/module.lua"))()
 Aiming.TeamCheck(false)
 
 -- // Services
