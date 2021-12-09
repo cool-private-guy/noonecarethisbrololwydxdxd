@@ -164,7 +164,7 @@ RService.RenderStepped:Connect(function()
 		local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
 		local split = string.split(pingvalue,'(')
 		local ping = tonumber(split[1])
-		local PingNumber = pingValue[1]
+		local PingNumber = pingvalue[1]
 
 		if  ping < 250 then
 			getgenv().PredictionVelocity = 4.677
