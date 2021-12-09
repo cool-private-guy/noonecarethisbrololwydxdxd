@@ -1,3 +1,13 @@
+-- // Aimlock
+
+
+
+-- // Silent Aim
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/base.lua"))()
+
+-- // UI
+
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/uilib.lua"))()
 local window = library:CreateWindow("privateware-rewrite", Vector2.new(492, 598), Enum.KeyCode.V)
 
