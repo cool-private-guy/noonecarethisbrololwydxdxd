@@ -311,3 +311,34 @@ end)
 L_4_:AddSlider("Transparency", 0, 0.2, 1, 10, function(bro16)
     Aiming.Transparency = bro16
 end)
+
+L_5_:AddToggle("Esp Toggle", false, function(bro17)
+    ESP:Toggle(bro17)
+end):AddKeybind("None")
+
+L_5_:AddToggle("Boxes", false, function(bro18)
+    ESP.Boxes = bro18
+end)
+
+L_5_:AddToggle("Names", false, function(bro19)
+    ESP.Names = bro19
+end)
+
+L_5_:AddToggle("Tracers", false, function(bro20)
+    ESP.Tracers = bro20
+end)
+
+L_5_:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
+    ESP.AttachShift = bro21
+end)
+
+local whitelist = L_6_:AddTextbox("Player Username", function()
+end)
+
+L_6_:AddButton("Add Whitelist", function()
+    Aiming.IgnorePlayer(whitelist)
+end)
+
+L_6_:AddButton("Remove Whitelist", function()
+    Aiming.UnIgnorePlayer(whitelist)
+end)
