@@ -153,11 +153,12 @@ RService.RenderStepped:Connect(function()
 	end
 	if getgenv().CheckIfJumped == true then
 		if AimlockTarget.Character.Humanoid.FloorMaterial == Enum.Material.Air then
-
 			getgenv().AimPart = "RightFoot"
 		else
 			getgenv().AimPart = getgenv().OldAimPart
 		end
+    elseif AimlockTarget.Character.Humanoid.FloorMaterial not Enum.Material.Air then
+            getgenv().CheckIfJumped = false
 	end
 	if getgenv().AutoPrediction == true then
 		wait(5.2)
@@ -227,6 +228,18 @@ local L_4_ = B_1_:CreateSector("Silent Aim; Settings", "right")
 local L_5_ = B_1_:CreateSector("Esp", "left")
 local L_6_ = B_1_:CreateSector("Settings", "right")
 
-L_1_:AddToggle("Enabled", function(bro1)
+L_1_:AddToggle("Enabled", false, function(bro1)
 	Aimlock = bro1
+end):AddKeybind("None")
+
+L_1_:AddToggle("Ping Based Prediction", false, function(bro2)
+    getgenv().AutoPrediction = bro2
+end)
+
+L_1_:AddToggle("Airshot Function", false, function(bro3)
+    getgenv().CheckIfJumped = bro3
+end)
+
+L_1_:AddDropdown("Hitbox", {"Head", "UpperTorso", "HumanoidRootPart", "LowerTorso", "LeftUpperLeg", "RightUpperLeg", "LeftLowerLeg", "RightLowerLeg", "LeftFoot", "RightFoot"}, "HumanoidRootPart", false, function(bro4)
+    getgenv().AimPart = bro4
 end)
