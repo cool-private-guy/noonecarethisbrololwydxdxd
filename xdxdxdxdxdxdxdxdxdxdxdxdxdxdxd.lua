@@ -209,7 +209,7 @@ end)
 
 -- // Esp Module
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/espmodule.lua", true))()
+local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/cool-private-guy/noonecarethisbrololwydxdxd/main/espmodule.lua", true))()
 
 -- // Silent Aim
 
