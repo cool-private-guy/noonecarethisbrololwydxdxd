@@ -158,7 +158,7 @@ RService.RenderStepped:Connect(function()
 			getgenv().AimPart = getgenv().OldAimPart
 		end
     end
-	if getgenv().AutoPrediction == true then
+if getgenv().AutoPrediction == true then
 		wait(5.2)
 		local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
 		local split = string.split(pingvalue,'(')
