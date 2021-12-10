@@ -292,15 +292,15 @@ L_4_:AddDropdown("Shape", {"Custom", "Circle", "Square"}, "Custom", false, funct
     if v == "Custom" then
         Aiming.FOV = 30
         Aiming.FOVSides = 100
-        Aiming.Transparency = 0.3
+        Aiming.Transparency = 0.5
     elseif v == "Circle" then
         Aiming.FOV = 30
         Aiming.FOVSides = 100
-        Aiming.Transparency = 0.3
+        Aiming.Transparency = 0.5
     elseif v == "Square" then
         Aiming.FOV = 30
         Aiming.FOVSides = 14
-        Aiming.Transparency = 0.3
+        Aiming.Transparency = 0.5
     end
 end)
 
@@ -312,7 +312,7 @@ L_4_:AddSlider("Round", 1, 40, 40, decimals, function(bro15)
     Aiming.FOVSides = bro15
 end)
 
-L_4_:AddSlider("Transparency", 0, 0.2, 1, 10, function(bro16)
+L_4_:AddSlider("Transparency", 0, 0.5, 1, 10, function(bro16)
     Aiming.Transparency = bro16
 end)
 
