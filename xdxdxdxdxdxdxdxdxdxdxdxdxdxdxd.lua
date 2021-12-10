@@ -325,19 +325,31 @@ local window = library:CreateWindow("privateware-rewrite", Vector2.new(492, 598)
 
 local B_1_ = window:CreateTab("Aim Stuff")
 local B_2_ = window:CreateTab("Misc")
-local B_3_ = window:CreateTab("Visual")
+local B_3_ = window:CreateTab("Ingame")
 local B_4_ = window:CreateTab("Teleports")
 
 local section1 = B_1_:CreateSector("Aimbot", "left")
 local section2 = B_1_:CreateSector("Aimbot; Settings", "right")
 local section3 = B_1_:CreateSector("Silent Aim", "left")
 local section4 = B_1_:CreateSector("Silent Aim; Settings", "right")
-local section5 = B_1_:CreateSector("Esp", "left")
+local section5 = B_1_:CreateSector("Anti-Aim (Beta)", "left")
 local section6 = B_1_:CreateSector("Settings", "right")
 local section7 = B_2_:CreateSector("Animations", "left")
 local section8 = B_2_:CreateSector("CFrame Speed", "right")
 local section9 = B_2_:CreateSector("Force Resets", "left")
 local section10 = B_2_:CreateSector("Cheats", "right")
+local section11 = B_3_:CreateSector("ESP", "left")
+local section12 = B_3_:CreateSector("Sided Things", "right")
+local section13 = B_3_:CreateSector("Ingame Things", "left")
+local section14 = B_4_:CreateSector("Tps 1", "left")
+local section15 = B_4_:CreateSector("Tps 2", "right")
+local section16 = B_4_:CreateSector("Tps 3", "left")
+local section17 = B_4_:CreateSector("Tps 4", "right")
+local section18 = B_4_:CreateSector("Tps 5", "left")
+local section19 = B_4_:CreateSector("Tps 6", "left")
+local section20 = B_4_:CreateSector("Tps 7", "right")
+local section21 = B_4_:CreateSector("Tps 8", "left")
+local section22 = B_4_:CreateSector("Tps 9", "right")
 
 section1:AddToggle("Enabled", false, function(alr1)
     Aimlock = alr1
@@ -431,24 +443,51 @@ section4:AddSlider("Transparency", 0, 0.5, 1, 10, function(bro16)
     Aiming.Transparency = bro16
 end)
 
-section5:AddToggle("Esp Toggle", false, function(bro17)
-    ESP:Toggle(bro17)
-end):AddKeybind("None")
-
-section5:AddToggle("Boxes", false, function(bro18)
-    ESP.Boxes = bro18
+section5:AddButton("FIX ANTILOCK", function()
+    for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+		if v:IsA("Script") and v.Name ~= "Health" and v.Name ~= "Sound" and v:FindFirstChild("LocalScript") then
+			v:Destroy()
+		end
+	end
+	game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
+		repeat
+			wait()
+		until game.Players.LocalPlayer.Character
+		char.ChildAdded:Connect(function(child)
+			if child:IsA("Script") then 
+				wait(0.1)
+				if child:FindFirstChild("LocalScript") then
+					child.LocalScript:FireServer()
+				end
+			end
+		end)
+	end)
 end)
 
-section5:AddToggle("Names", false, function(bro19)
-    ESP.Names = bro19
-end)
+local glitch = false
+local clicker = false
 
-section5:AddToggle("Tracers", false, function(bro20)
-    ESP.Tracers = bro20
-end)
+section5:AddTextbox("Antilock Value", "", function(alr8)
+    getgenv().Multiplier = alr8
+end, {
+    ["clear"] = false,
+})
 
-section5:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
-    ESP.AttachShift = bro21
+section5:AddButton("Antilock Improved (Z)", function()
+    local userInput = game:service('UserInputService')
+	local runService = game:service('RunService')
+
+	userInput.InputBegan:connect(function(Key)
+		if Key.KeyCode == Enum.KeyCode.Z then
+			Enabled = not Enabled
+			if Enabled == true then
+				repeat
+					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.Humanoid.MoveDirection * getgenv().Multiplier
+					runService.Stepped:wait()
+				until Enabled == false
+			end
+		end
+	end)
 end)
 
 local whitelist = section6:AddTextbox("Player Username", "", function()
@@ -973,4 +1012,370 @@ section10:AddButton("Chatlogs", function()
 	local chatFrame = player.PlayerGui.Chat.Frame
 	chatFrame.ChatChannelParentFrame.Visible = true
 	chatFrame.ChatBarParentFrame.Position = chatFrame.ChatChannelParentFrame.Position+UDim2.new(UDim.new(),chatFrame.ChatChannelParentFrame.Size.Y)
+end)
+
+section11:AddToggle("Esp Toggle", false, function(bro17)
+    ESP:Toggle(bro17)
+end):AddKeybind("None")
+
+section11:AddToggle("Boxes", false, function(bro18)
+    ESP.Boxes = bro18
+end)
+
+section11:AddToggle("Names", false, function(bro19)
+    ESP.Names = bro19
+end)
+
+section11:AddToggle("Tracers", false, function(bro20)
+    ESP.Tracers = bro20
+end)
+
+section11:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
+    ESP.AttachShift = bro21
+end)
+
+section12:AddDropdown("Faces", {"Super Super Happy Face", "Playful Vampire", "Blizzard Beast Mode", "Troublemaker", "Beast Mode", "Radioactive Beast Mode", "Madness Face"}, default, false, function(v)
+    if v == "Super Super Happy Face" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://494290547"
+    elseif v == "Playful Vampire" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://2409281591"
+    elseif v == "Blizzard Beast Mode" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://209712379"
+    elseif v == "Troublemaker" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://22920500"
+    elseif v == "Beast Mode" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://127959433"
+    elseif v == "Radioactive Beast Mode" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://2225757922"
+    elseif v == "Madness Face" then
+        game.Players.LocalPlayer.Character.Head.face.Texture = "rbxassetid://42070872"
+    end
+end)
+
+section13:AddButton("Rejoin Server", function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+end)
+
+section13:AddButton("CPU Limiter", function()
+    local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+ 
+local WindowFocusReleasedFunction = function()
+    RunService:Set3dRenderingEnabled(false)
+    setfpscap(10)
+    return
+end
+ 
+local WindowFocusedFunction = function()
+    RunService:Set3dRenderingEnabled(true)
+    setfpscap(360)
+    return
+end
+ 
+local Initialize = function()
+    UserInputService.WindowFocusReleased:Connect(WindowFocusReleasedFunction)
+    UserInputService.WindowFocused:Connect(WindowFocusedFunction)
+    return
+end
+Initialize()
+end)
+
+section13:AddButton("FPS Booster", function()
+    local decalsyeeted = true
+local g = game
+local w = g.Workspace
+local l = g.Lighting
+local t = w.Terrain
+local ggw = game:GetService("Workspace")
+local ggp = game:GetService("Player")
+local ggl = game:GetService("Lighting")
+local ggrs = game:GetService("ReplicatedStorage")
+t.WaterWaveSize = 0
+t.WaterWaveSpeed = 0
+t.WaterReflectance = 0
+t.WaterTransparency = 0
+l.GlobalShadows = false
+l.FogEnd = 9e9
+l.Brightness = 0
+ggw.Ignored.SnowBlock:Destroy()
+ggp.nasipdevarsa.PlayerGui.MainScreenGui.SNOWBALLFRAME:Destroy()
+ggl.SnowBlur:Destroy()
+ggrs.SnowBlock:Destroy()
+settings().Rendering.QualityLevel = "Level01"
+for i, v in pairs(g:GetDescendants()) do
+    if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+    elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+        v.Transparency = 1
+    elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+        v.Lifetime = NumberRange.new(0)
+    elseif v:IsA("Explosion") then
+        v.BlastPressure = 1
+        v.BlastRadius = 1
+    elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+        v.Enabled = false
+    elseif v:IsA("MeshPart") then
+        v.Material = "Plastic"
+        v.Reflectance = 0
+        v.TextureID = 10385902758728957
+    end
+end
+for i, e in pairs(l:GetChildren()) do
+    if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+        e.Enabled = false
+    end
+end
+end)
+
+section13:AddSlider("Field Of View", 10, 70, 120, 120, function(fov)
+    game:GetService("Workspace").Camera.FieldOfView = fov
+end)
+
+section14:AddDropdown("Teleports", {"Admin Guns 1", "Admin Guns 2", "Food Admin", "Ufo", "Ufo 2", "Ufo 3"}, default, false, function(v)
+    if v == "Admin Guns 1" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-873, -34, -537)
+            pl.CFrame = location
+    elseif v == "Admin Guns 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-808, -39, -932)
+            pl.CFrame = location
+    elseif v == "Food Admin" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-786, -39, -932)
+            pl.CFrame = location
+    elseif v == "Ufo" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(71, 139, -691)
+            pl.CFrame = location
+    elseif v == "Ufo 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-30, 132, -742)
+            pl.CFrame = location
+    elseif v == "Ufo 3" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(173, 157, -731)
+            pl.CFrame = location
+    end
+end)
+
+section15:AddDropdown("Mountains", {"Rev Mountain", "Db Mountain", "Lmg Mountain", "AK Mountain", "Tactical Mountain"}, default, false, function(v)
+    if v == "Rev Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-681, 167, -55)
+            pl.CFrame = location
+    elseif v == "Db Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-1073, 110, -136)
+            pl.CFrame = location
+    elseif v == "Lmg Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-720, 122, -350)
+            pl.CFrame = location
+    elseif v == "AK Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-721, 123, -660)
+            pl.CFrame = location
+    elseif v == "Tactical Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(503, 139, -755)
+            pl.CFrame = location
+    end
+end)
+
+section16:AddDropdown("Mountains 2", {"Gstation Mountain", "Bathroom Mountain", "Cementery Mountain", "Cementery Mountain 2", "Flowers Mountain"}, default, false, function(v)
+    if v == "Gstation Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(654, 159, -400)
+            pl.CFrame = location
+    elseif v == "Bathroom Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(391, 130, -205)
+            pl.CFrame = location
+    elseif v == "Cementery Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(438, 122, -26)
+            pl.CFrame = location
+    elseif v == "Cementery Mountain 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(91, 111, -39)
+            pl.CFrame = location
+    elseif v == "Flowers Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(151, 137, -329)
+            pl.CFrame = location
+    end
+end)
+
+section17:AddDropdown("Mountains 3", {"Tommy Mountain", "Jail Mountain", "Furniture Mountain", "Playground Mountain", "Box Mountain"}, default, false, function(v)
+    if v == "Tommy Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-136, 128, -31)
+            pl.CFrame = location
+    elseif v == "Jail Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-260, 130, 42)
+            pl.CFrame = location
+    elseif v == "Furniture Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-509, 152, -36)
+            pl.CFrame = location
+    elseif v == "Playground Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-310, 103, -681)
+            pl.CFrame = location
+    elseif v == "Box Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-272, 126, -948)
+            pl.CFrame = location
+    end
+end)
+
+section18:AddDropdown("Mountains 4", {"Circus Mountain", "Circus Mountain 2", "School Mountain", "Grenade Mountain", "Casino Mountain"}, default, false, function(v)
+    if v == "Circus Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(248, 122, -869)
+            pl.CFrame = location
+    elseif v == "Circus Mountain 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-38, 115, -875)
+            pl.CFrame = location
+    elseif v == "Grenade Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-891, 136, 528)
+            pl.CFrame = location
+    elseif v == "Casino Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-848, 113, -28)
+            pl.CFrame = location
+    elseif v == "School Mountain" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-610, 147, 478)
+            pl.CFrame = location
+    end
+end)
+
+section19:AddDropdown("Buildings", {"Rev building", "Rev building 2", "Rev building 3", "Rpg building", "Bank Building"}, default, false, function(v)
+    if v == "Rev building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-584, 80, -78)
+            pl.CFrame = location
+    elseif v == "Rev building 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-496, 48, -213)
+            pl.CFrame = location
+    elseif v == "Rev building 3" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-647, 80, -204)
+            pl.CFrame = location
+    elseif v == "Rpg building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-222, 80, -466)
+            pl.CFrame = location
+    elseif v == "Bank Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-321, 80, -273)
+            pl.CFrame = location
+    end
+end)
+
+section20:AddDropdown("Buildings 2", {"Flowers Building", "Playground Building", "Playground Building 2", "Tommy Building", "Cementery Building"}, default, false, function(v)
+    if v == "Flowers Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-111, 80, -314)
+            pl.CFrame = location
+    elseif v == "Playground Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-225, 80, -626)
+            pl.CFrame = location
+    elseif v == "Playground Building 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-222, 80, -859)
+            pl.CFrame = location
+    elseif v == "Tommy Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-30, 80, -79)
+            pl.CFrame = location
+    elseif v == "Cementery Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(122, 80, -90)
+            pl.CFrame = location
+    end
+end)
+
+section21:AddDropdown("Buildings 3", {"AK Building", "AK Building 2", "Gstation Bulding", "Tactical Building", "School Roof"}, default, false, function(v)
+    if v == "AK Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-586, 66, -681)
+            pl.CFrame = location
+    elseif v == "AK Building 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-415, 71, -655)
+            pl.CFrame = location
+    elseif v == "Gstation Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(560, 106, -408)
+            pl.CFrame = location
+    elseif v == "Tactical Building" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(434, 106, -629)
+            pl.CFrame = location
+    elseif v == "School Roof" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-605, 68, 353)
+            pl.CFrame = location
+    end
+end)
+
+section22:AddDropdown("Threes", {"Bank Three", "Ak Three", "Playground Three", "Gym Three", "Flowers Three", "Tactical Three", "Gstation Three", "Cementery Three", "Cementery Three 2", "Jail Three", "School Three", "Circus Three"}, default, false, function(v)
+    if v == "Bank Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-376, 98, -444)
+            pl.CFrame = location
+    elseif v == "Ak Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-404, 98, -719)
+            pl.CFrame = location
+    elseif v == "Playground Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-345, 98, -769)
+            pl.CFrame = location
+    elseif v == "Gym Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-63, 98, -535)
+            pl.CFrame = location
+    elseif v == "Flowers Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-44, 99, -289)
+            pl.CFrame = location
+    elseif v == "Gstation Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(641, 102, -193)
+            pl.CFrame = location
+    elseif v == "Cementery Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(326, 99, -114)
+            pl.CFrame = location
+    elseif v == "Cementery Three 2" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(110, 99, -213)
+            pl.CFrame = location
+    elseif v == "Jail Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-418, 94, 67)
+            pl.CFrame = location
+    elseif v == "School Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(-537, 75, 162)
+            pl.CFrame = location
+    elseif v == "Circus Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(320, 100, -962)
+            pl.CFrame = location
+    elseif v == "Tactical Three" then
+            local pl = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local location = CFrame.new(387, 125, -492)
+            pl.CFrame = location
+    end
 end)
