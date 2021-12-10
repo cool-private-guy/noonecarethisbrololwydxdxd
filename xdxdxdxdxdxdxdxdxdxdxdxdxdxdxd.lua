@@ -280,12 +280,12 @@ end)
 
 L_4_:AddToggle("Show Fov", false, function(bro12)
     Aiming.ShowFOV = bro12
-end):AddKeybind("None"):AddKeybind(Color3.fromRGB(255, 108, 200), function(silentcolor)
-	Aiming.FOVColor = silentcolor
-end)
+end):AddKeybind("None")
 
 L_4_:AddToggle("Filled", false, function(bro13)
     Aiming.Filled = bro13
+end):AddKeybind(Color3.fromRGB(255, 108, 200), function(silentcolor)
+	Aiming.FOVColor = silentcolor
 end)
 
 L_4_:AddDropdown("Shape", {"Custom", "Circle", "Square"}, "Custom", false, function(v)
