@@ -37,11 +37,11 @@ library.theme = {
     sectorcolor = Color3.fromRGB(30, 30, 30),
     toptextcolor = Color3.fromRGB(255, 255, 255),
     topheight = 48,
-    topcolor = Color3.fromRGB(109, 22, 170),
+    topcolor = Color3.fromRGB(30, 30, 30),
     topcolor2 = Color3.fromRGB(30, 30, 30),
     buttoncolor = Color3.fromRGB(45, 45, 45),
     buttoncolor2 = Color3.fromRGB(39, 39, 39),
-    itemscolor = Color3.fromRGB(200, 200, 200),
+    itemscolor = Color3.fromRGB(109, 22, 170),
     itemscolor2 = Color3.fromRGB(210, 210, 210)
 }
 
