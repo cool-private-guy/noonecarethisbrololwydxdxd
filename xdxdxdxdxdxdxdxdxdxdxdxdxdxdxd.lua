@@ -284,8 +284,6 @@ end):AddKeybind("None")
 
 L_4_:AddToggle("Filled", false, function(bro13)
     Aiming.Filled = bro13
-end):AddKeybind(Color3.fromRGB(255, 108, 200), function(silentcolor)
-	Aiming.FOVColor = silentcolor
 end)
 
 L_4_:AddDropdown("Shape", {"Custom", "Circle", "Square"}, "Custom", false, function(v)
@@ -334,10 +332,6 @@ end)
 
 L_5_:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
     ESP.AttachShift = bro21
-end)
-
-L_5_:AddColorpicker("Esp Color", Color3.fromRGB(255, 108, 200), function(espcolor)
-	ESP.Color = espcolor 
 end)
 
 local whitelist = L_6_:AddTextbox("Player Username", "", function()
