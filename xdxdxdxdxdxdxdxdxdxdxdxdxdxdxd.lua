@@ -336,6 +336,8 @@ local section5 = B_1_:CreateSector("Esp", "left")
 local section6 = B_1_:CreateSector("Settings", "right")
 local section7 = B_2_:CreateSector("Animations", "left")
 local section8 = B_2_:CreateSector("CFrame Speed", "right")
+local section9 = B_2_:CreateSector("Force Resets", "left")
+local section10 = B_2_:CreateSector("Cheats", "right")
 
 section1:AddToggle("Enabled", false, function(alr1)
     Aimlock = alr1
@@ -562,4 +564,413 @@ local clicker = false
 
 section8:AddSlider("Speed", -10, 0, 10, 5, function(ass)
     urspeed = ass
+end)
+
+section9:AddButton("Nil Body", function()
+    for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v:Destroy()
+        end
+    end
+end)
+
+section9:AddButton("Nil Char", function()
+    game.Players.LocalPlayer.Character.Head:Destroy()
+    game.Players.LocalPlayer.Character.UpperTorso:Destroy()
+    game.Players.LocalPlayer.Character.LowerTorso:Destroy()
+    game.Players.LocalPlayer.Character.LeftFoot:Destroy()
+    game.Players.LocalPlayer.Character.LeftLowerLeg:Destroy()
+    game.Players.LocalPlayer.Character.LeftUpperLeg:Destroy()
+    game.Players.LocalPlayer.Character.RightFoot:Destroy()
+    game.Players.LocalPlayer.Character.RightLowerLeg:Destroy()
+    game.Players.LocalPlayer.Character.RightUpperLeg:Destroy()
+    game.Players.LocalPlayer.Character.LeftHand:Destroy()
+    game.Players.LocalPlayer.Character.LeftLowerArm:Destroy()
+    game.Players.LocalPlayer.Character.LeftUpperArm:Destroy()
+    game.Players.LocalPlayer.Character.RightHand:Destroy()
+    game.Players.LocalPlayer.Character.RightLowerArm:Destroy()
+    game.Players.LocalPlayer.Character.RightUpperArm:Destroy()
+    game.Players.LocalPlayer.Character.HumanoidRootPart:Destroy()  
+end)
+
+FLYMODE = 'IY'
+FLYSPEED = 30
+section10:AddButton("Fly (X)", function()
+	if FLYMODE == 'IY' then
+		repeat wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Head") and game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid")
+		local mouse = game.Players.LocalPlayer:GetMouse()
+		repeat wait() until mouse
+		local plr = game.Players.LocalPlayer
+		local torso = plr.Character.Head
+		local flying = false
+		local deb = true
+		local ctrl = {f = 0, b = 0, l = 0, r = 0}
+		local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+		local maxspeed = 5000
+		local speed = 5000
+		function Fly()
+			local bg = Instance.new("BodyGyro", torso)
+			bg.P = 9e4
+			bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+			bg.cframe = torso.CFrame
+			local bv = Instance.new("BodyVelocity", torso)
+			bv.velocity = Vector3.new(0,0.1,0)
+			bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+			repeat wait()
+				plr.Character:FindFirstChildWhichIsA('Humanoid').PlatformStand = true
+				if ctrl.l + ctrl.r ~= 100000 or ctrl.f + ctrl.b ~= 10000 then
+					speed = speed+.0+(speed/maxspeed)
+					if speed > maxspeed then
+						speed = maxspeed
+					end
+				elseif not (ctrl.l + ctrl.r ~= 5 or ctrl.f + ctrl.b ~= 5) and speed ~= 5 then
+					speed = speed-5
+					if speed > 5 then
+						speed = -2
+					end
+				end
+				if (ctrl.l + ctrl.r) ~= 5 or (ctrl.f + ctrl.b) ~= 5 then
+					bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+					lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+				elseif (ctrl.l + ctrl.r) == 5 and (ctrl.f + ctrl.b) == 5 and speed ~= 5 then
+					bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+				else
+					bv.velocity = Vector3.new(0,0.1,0)
+				end
+				bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+			until not flying
+			ctrl = {f = 0, b = 0, l = 0, r = 0}
+			lastctrl = {f = 0, b = 0, l = 0, r = 0}
+			speed = 5
+			bg:Destroy()
+			bv:Destroy()
+			plr.Character:FindFirstChildWhichIsA('Humanoid').PlatformStand = false
+		end
+		mouse.KeyDown:connect(function(key)
+			if key:lower() == "x" then
+				if flying then flying = false
+				else
+					flying = true
+					Fly()
+				end
+			elseif key:lower() == "w" then
+				ctrl.f = FLYSPEED
+			elseif key:lower() == "s" then
+				ctrl.b = -FLYSPEED
+			elseif key:lower() == "a" then
+				ctrl.l = -FLYSPEED
+			elseif key:lower() == "d" then
+				ctrl.r = FLYSPEED
+			end
+		end)
+		mouse.KeyUp:connect(function(key)
+			if key:lower() == "w" then
+				ctrl.f = 0
+			elseif key:lower() == "s" then
+				ctrl.b = 0
+			elseif key:lower() == "a" then
+				ctrl.l = 0
+			elseif key:lower() == "d" then
+				ctrl.r = 0
+			end
+		end)
+		Fly()
+	else
+		local plr = game.Players.LocalPlayer
+		local Humanoid = plr.Character:FindFirstChildWhichIsA('Humanoid')
+		local mouse = plr:GetMouse()
+		localplayer = plr
+		if workspace:FindFirstChild("Core") then
+			workspace.Core:Destroy()
+		end
+		local Core = Instance.new("Part")
+		Core.Name = "Core"
+		Core.Size = Vector3.new(0.05, 0.05, 0.05)
+		spawn(function()
+			Core.Parent = workspace
+			local Weld = Instance.new("Weld", Core)
+			Weld.Part0 = Core
+			Weld.Part1 = localplayer.Character.LowerTorso
+			Weld.C0 = CFrame.new(0, 0, 0)
+		end)
+		workspace:WaitForChild("Core")
+		local torso = workspace.Core
+		flying = true
+		local speed=FLYSPEED
+		local keys={a=false,d=false,w=false,s=false}
+		local e1
+		local e2
+		local function start()
+			local pos = Instance.new("BodyPosition",torso)
+			local gyro = Instance.new("BodyGyro",torso)
+			pos.Name="EPIXPOS"
+			pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+			pos.position = torso.Position
+			gyro.maxTorque = Vector3.new(15e15, 15e15, 15e15)
+			gyro.cframe = torso.CFrame
+			repeat
+				wait()
+				Humanoid.PlatformStand=true
+				local new=gyro.cframe - gyro.cframe.p + pos.position
+				if not keys.w and not keys.s and not keys.a and not keys.d then
+					speed=FLYSPEED
+				end
+				if keys.w then
+					new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+					speed=speed
+				end
+				if keys.s then
+					new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+					speed=speed
+				end
+				if keys.d then
+					new = new * CFrame.new(speed,0,0)
+					speed=speed
+				end
+				if keys.a then
+					new = new * CFrame.new(-speed,0,0)
+					speed=speed
+				end
+				if speed>FLYSPEED then
+					speed=FLYSPEED
+				end
+				pos.position=new.p
+				if keys.w then
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(-math.rad(speed),0,0)
+				elseif keys.s then
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(math.rad(speed),0,0)
+				else
+					gyro.cframe = workspace.CurrentCamera.CoordinateFrame
+				end
+			until flying == false
+			if gyro then gyro:Destroy() end
+			if pos then pos:Destroy() end
+			flying=false
+			Humanoid.PlatformStand=false
+			speed=FLYSPEED
+		end
+		e1=mouse.KeyDown:connect(function(key)
+			if not torso or not torso.Parent then flying=false e1:disconnect() e2:disconnect() return end
+			if key=="w" then
+				keys.w=true
+			elseif key=="s" then
+				keys.s=true
+			elseif key=="a" then
+				keys.a=true
+			elseif key=="d" then
+				keys.d=true
+			elseif key=="x" then
+				if flying==true then
+					flying=false
+				else
+					flying=true
+					start()
+				end
+			end
+		end)
+		e2=mouse.KeyUp:connect(function(key)
+			if key=="w" then
+				keys.w=false
+			elseif key=="s" then
+				keys.s=false
+			elseif key=="a" then
+				keys.a=false
+			elseif key=="d" then
+				keys.d=false
+			end
+		end)
+		start()
+	end
+end)
+section10:AddButton("Fly Type", function()
+	if FLYMODE == 'IY' then
+		FLYMODE = 'Default'
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Private-Ware",
+			Text = 'Fly ( Default Mode ) / Reset To Change.',
+			Duration = 2,
+		})
+	else
+		FLYMODE = 'IY'
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Private-Ware",
+			Text = 'Fly ( IY Mode ) / Reset To Change.',
+			Duration = 2,
+		})
+	end
+end)
+
+section10:AddButton("Fly Speed [+]", function()
+	FLYSPEED = FLYSPEED + 1
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Private-Ware",
+		Text = " [+] Your Fly Speed Is Now, " ..(tostring(FLYSPEED))..".",
+		Duration = 1,
+	})
+end)
+
+section10:AddButton("Fly Speed [-]", function()
+	FLYSPEED = FLYSPEED - 1
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Private-Ware",
+		Text = " [-] Your Fly Speed Is Now, " ..(tostring(FLYSPEED))..".",
+		Duration = 1,
+	})
+end)
+
+section10:AddButton("AntiFling (K)", function()
+	getgenv().Key = "K"
+	local L_148_ = game.Players.LocalPlayer
+	local L_149_ = L_148_:GetMouse()
+	local L_150_ = false
+	function Nigger(L_151_arg0)
+		L_151_arg0 = L_151_arg0:upper() or L_151_arg0:lower()
+		if L_151_arg0 == Key then
+			L_150_ = not L_150_
+			game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = L_150_
+		end
+	end
+	L_149_.KeyDown:Connect(Nigger)
+end)
+
+section10:AddButton("Macro in Lua (B)", function()
+	local Player = game:GetService("Players").LocalPlayer
+	local Mouse = Player:GetMouse()
+	local SpeedGlitch = false
+	local Wallet = Player.Backpack:FindFirstChild("Wallet")
+
+	local UniversalAnimation = Instance.new("Animation")
+
+	function stopTracks()
+		for _, v in next, game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):GetPlayingAnimationTracks() do
+			if (v.Animation.AnimationId:match("rbxassetid")) then
+				v:Stop()
+			end
+		end
+	end
+
+	function loadAnimation(id)
+		if UniversalAnimation.AnimationId == id then
+			stopTracks()
+			UniversalAnimation.AnimationId = "1"
+		else
+			UniversalAnimation.AnimationId = id
+			local animationTrack = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):LoadAnimation(UniversalAnimation)
+			animationTrack:Play()
+		end
+	end
+
+	Mouse.KeyDown:Connect(function(Key)
+		if Key == "b" then
+			SpeedGlitch = not SpeedGlitch
+			if SpeedGlitch == true then
+				stopTracks()
+				loadAnimation("rbxassetid://3189777795")
+				wait(1.5)
+				Wallet.Parent = Player.Character
+				wait(0.15)
+				Player.Character:FindFirstChild("Wallet").Parent = Player.Backpack
+				wait(0.05)
+				repeat game:GetService("RunService").Heartbeat:wait()
+					keypress(0x49)
+					game:GetService("RunService").Heartbeat:wait()
+					keypress(0x4F)
+					game:GetService("RunService").Heartbeat:wait()
+					keyrelease(0x49)
+					game:GetService("RunService").Heartbeat:wait()
+					keyrelease(0x4F)
+					game:GetService("RunService").Heartbeat:wait()
+				until SpeedGlitch == false
+			end
+		end
+	end)
+end)
+
+section10:AddButton("Speed (C)", function()
+	plr = game:GetService('Players').LocalPlayer
+	down = true
+
+	function onButton1Down(mouse)
+		down = true
+		while down do
+			if not down then break end
+			local char = plr.Character
+			char.HumanoidRootPart.Velocity = char.HumanoidRootPart.CFrame.lookVector * 190
+			wait()
+		end
+	end
+
+	function onButton1Up(mouse)
+		down = false
+	end
+
+	function onSelected(mouse)
+		mouse.KeyDown:connect(function(c) if c:lower()=="c"then onButton1Down(mouse)end end)
+		mouse.KeyUp:connect(function(c) if c:lower()=="c"then onButton1Up(mouse)end end)
+	end
+	onSelected(game.Players.LocalPlayer:GetMouse())
+end)
+
+section10:AddButton("Chatlogs", function()
+	enabled = true
+	spyOnMyself = true
+	public = false
+	publicItalics = true
+	privateProperties = {
+		Color = Color3.fromRGB(188, 0, 255); 
+		Font = Enum.Font.SourceSansBold;
+		TextSize = 18;
+	}
+
+	--////////////////////////////////////////////////////////////////
+
+	local StarterGui = game:GetService("StarterGui")
+	local Players = game:GetService("Players")
+	local player = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.LocalPlayer
+	local saymsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+	local getmsg = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("OnMessageDoneFiltering")
+	local instance = (_G.chatSpyInstance or 0) + 1
+	_G.chatSpyInstance = instance
+
+	local function onChatted(p,msg)
+		if _G.chatSpyInstance == instance then
+			if p==player and msg:lower():sub(1,4)=="/spy" then
+				enabled = not enabled
+				wait(0.3)
+				privateProperties.Text = "{SPY "..(enabled and "EN" or "DIS").."ABLED}"
+				StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+			elseif enabled and (spyOnMyself==true or p~=player) then
+				msg = msg:gsub("[\n\r]",''):gsub("\t",' '):gsub("[ ]+",' ')
+				local hidden = true
+				local conn = getmsg.OnClientEvent:Connect(function(packet,channel)
+					if packet.SpeakerUserId==p.UserId and packet.Message==msg:sub(#msg-#packet.Message+1) and (channel=="All" or (channel=="Team" and public==false and Players[packet.FromSpeaker].Team==player.Team)) then
+						hidden = false
+					end
+				end)
+				wait(1)
+				conn:Disconnect()
+				if hidden and enabled then
+					if public then
+						saymsg:FireServer((publicItalics and "/me " or '').."{SPY} [".. p.Name .."]: "..msg,"All")
+					else
+						privateProperties.Text = "{SPY} [".. p.Name .."]: "..msg
+						StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+					end
+				end
+			end
+		end
+	end
+
+	for _,p in ipairs(Players:GetPlayers()) do
+		p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+	end
+	Players.PlayerAdded:Connect(function(p)
+		p.Chatted:Connect(function(msg) onChatted(p,msg) end)
+	end)
+	privateProperties.Text = "{SPY "..(enabled and "EN" or "DIS").."ABLED}"
+	StarterGui:SetCore("ChatMakeSystemMessage",privateProperties)
+	if not player.PlayerGui:FindFirstChild("Chat") then wait(3) end
+	local chatFrame = player.PlayerGui.Chat.Frame
+	chatFrame.ChatChannelParentFrame.Visible = true
+	chatFrame.ChatBarParentFrame.Position = chatFrame.ChatChannelParentFrame.Position+UDim2.new(UDim.new(),chatFrame.ChatChannelParentFrame.Size.Y)
 end)
