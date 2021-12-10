@@ -280,7 +280,9 @@ end)
 
 L_4_:AddToggle("Show Fov", false, function(bro12)
     Aiming.ShowFOV = bro12
-end):AddKeybind("None")
+end):AddKeybind("None"):AddKeybind(Color3.fromRGB(255, 108, 200), function(silentcolor)
+	Aiming.FOVColor = silentcolor
+end)
 
 L_4_:AddToggle("Filled", false, function(bro13)
     Aiming.Filled = bro13
@@ -334,7 +336,7 @@ L_5_:AddSlider("Attach Shift", 0, 1, 10, decimals, function(bro21)
     ESP.AttachShift = bro21
 end)
 
-L_5_:AddColorpicker("Esp Color", Color3.fromRGB(231, 84, 128), function(espcolor)
+L_5_:AddColorpicker("Esp Color", Color3.fromRGB(255, 108, 200), function(espcolor)
 	ESP.Color = espcolor 
 end)
 
