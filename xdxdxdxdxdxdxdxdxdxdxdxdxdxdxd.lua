@@ -166,7 +166,7 @@ if getgenv().AutoPrediction == true then
         local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
         local split = string.split(pingvalue,'(')
         local ping = tonumber(split[1])
-            local PingNumber = pingValue[1]
+            local PingNumber = pingvalue[1]
 
             if  ping < 250 then
                 getgenv().PredictionVelocity = 4.677
@@ -321,7 +321,7 @@ local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/wydkidwyd
 loadstring(game:HttpGet("https://raw.githubusercontent.com/wydkidwydkid4345/noonecarethisbrololwydxdxd/main/base.lua", true))()
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/wydkidwydkid4345/noonecarethisbrololwydxdxd/main/uilib.lua"))()
-local window = library:CreateWindow("privateware-rewrite", Vector2.new(492, 598), Enum.KeyCode.V)
+local window = library:CreateWindow("doggyware-rewrite", Vector2.new(492, 598), Enum.KeyCode.V)
 
 local B_1_ = window:CreateTab("Aim Stuff")
 local B_2_ = window:CreateTab("Misc")
@@ -601,7 +601,7 @@ end)
 local glitch = false
 local clicker = false
 
-section8:AddSlider("Speed", 0, 1, 5, decimals, function(ass)
+section8:AddSlider("Speed", -10, 0, 10, 5, function(ass)
     urspeed = ass
 end)
 
@@ -856,6 +856,8 @@ section10:AddButton("Fly Speed [-]", function()
 		Duration = 1,
 	})
 end)
+
+section10:AddLabel(" ")
 
 section10:AddButton("AntiFling (K)", function()
 	getgenv().Key = "K"
