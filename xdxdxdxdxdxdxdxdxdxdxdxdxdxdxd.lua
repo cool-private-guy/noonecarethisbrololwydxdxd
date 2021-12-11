@@ -601,7 +601,7 @@ end)
 local glitch = false
 local clicker = false
 
-section8:AddSlider("Speed", -10, 0, 10, 5, function(ass)
+section8:AddSlider("Speed", 0, 0, 5, decimals, function(ass)
     urspeed = ass
 end)
 
@@ -1130,7 +1130,7 @@ for i, e in pairs(l:GetChildren()) do
 end
 end)
 
-section13:AddSlider("Field Of View", 10, 70, 120, 120, function(fov)
+section13:AddSlider("Field Of View", 10, 70, 120, decimals, function(fov)
     game:GetService("Workspace").Camera.FieldOfView = fov
 end)
 
