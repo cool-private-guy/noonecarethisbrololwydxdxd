@@ -601,7 +601,7 @@ end)
 local glitch = false
 local clicker = false
 
-section8:AddSlider("Speed", -10, 0, 10, 5, function(ass)
+section8:AddSlider("Speed", 0, 1, 5, decimals, function(ass)
     urspeed = ass
 end)
 
