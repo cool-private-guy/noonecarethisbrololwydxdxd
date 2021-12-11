@@ -385,6 +385,7 @@ end)
 
 section3:AddToggle("Enabled", false, function(alr10)
     DaHoodSettings.SilentAim = alr10
+    Aiming.Enabled = alr10
 end):AddKeybind("None")
 
 section3:AddToggle("Visible Check", false, function(alr12)
