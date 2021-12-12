@@ -1,383 +1,226 @@
---Settings--
-local ESP = {
-    Enabled = false,
+local Lowfi = {
     Boxes = false,
-    BoxShift = CFrame.new(0,-1.5,0),
-	BoxSize = Vector3.new(4,6,0),
-    Color = Color3.fromRGB(109, 22, 170),
-    FaceCamera = false,
+    BoxesColor = Color3.fromRGB(255, 255, 255),
     Names = false,
-    TeamColor = false,
-    Thickness = 2,
-    AttachShift = 1,
-    TeamMates = true,
-    Players = true,
-    
-    Objects = setmetatable({}, {__mode="kv"}),
-    Overrides = {}
+    NamesColor = Color3.fromRGB(255, 255, 255),
+    Distance = false,
+    DistanceColor = Color3.fromRGB(255, 255, 255),
+    Cham = false,
+    ChamColor1 = Color3.fromRGB(0, 153, 153),
+    ChamColor2 = Color3.fromRGB(0, 220, 220),
+    Thickness = 1,
+    Objects = setmetatable({}, {__mode = "kv"})
 }
 
---Declarations--
-local cam = workspace.CurrentCamera
-local plrs = game:GetService("Players")
-local plr = plrs.LocalPlayer
-local mouse = plr:GetMouse()
-
-local V3new = Vector3.new
-local WorldToViewportPoint = cam.WorldToViewportPoint
-
---Functions--
-local function Draw(obj, props)
-	local new = Drawing.new(obj)
-	
-	props = props or {}
-	for i,v in pairs(props) do
-		new[i] = v
-	end
-	return new
-end
-
-function ESP:GetTeam(p)
-	local ov = self.Overrides.GetTeam
-	if ov then
-		return ov(p)
-	end
-	
-	return p and p.Team
-end
-
-function ESP:IsTeamMate(p)
-    local ov = self.Overrides.IsTeamMate
-	if ov then
-		return ov(p)
+local Service = setmetatable({}, {
+    __index = function(t, k)
+        return game:GetService(k)
     end
-    
-    return self:GetTeam(p) == self:GetTeam(plr)
-end
+})
 
-function ESP:GetColor(obj)
-	local ov = self.Overrides.GetColor
-	if ov then
-		return ov(obj)
-    end
-    local p = self:GetPlrFromChar(obj)
-	return p and self.TeamColor and p.Team and p.Team.TeamColor.Color or self.Color
-end
+local CurrentCamera = workspace.CurrentCamera
+local Players = Service.Players
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local WorldToViewPortPoint = CurrentCamera.WorldToViewportPoint
+local WorldToScreenPoint = CurrentCamera.WorldToScreenPoint
+local V2New = Vector2.new
+local V3New = Vector3.new
+local RunService = Service.RunService
 
-function ESP:GetPlrFromChar(char)
-	local ov = self.Overrides.GetPlrFromChar
-	if ov then
-		return ov(char)
-	end
-	
-	return plrs:GetPlayerFromCharacter(char)
-end
+local Module = {
+    Network = function(Data)
+        if Data and Data.Character and Data.Character:FindFirstChild("HumanoidRootPart") ~= nil and Data.Character:FindFirstChild("Humanoid") ~= nil and Data.Character:FindFirstChild("Head") ~= nil then
+            return true
+        end
+        return false
+    end,
+    Cham = function(Data, State)
+        local BoxVar = nil
+        local GlowVar = nil
+        if State then
+            for _, v in pairs(Data.Character:GetChildren()) do
+                if v:IsA("BasePart") and v.Transparency ~= 1 then
+                    if not v:FindFirstChild("Box") then
+                        if not v:FindFirstChild("VisibleBox") then
+                            BoxVar = Instance.new("BoxHandleAdornment", v)
+                            BoxVar.Name = "Box"
+                            BoxVar.AlwaysOnTop = true
+                            BoxVar.ZIndex = 4
+                            BoxVar.Adornee = v
+                            BoxVar.Color3 = Lowfi.ChamColor1
+                            BoxVar.Transparency = 0.5
+                            BoxVar.Size = v.Size + Vector3.new(0.02, 0.02, 0.02)
 
-function ESP:Toggle(bool)
-    self.Enabled = bool
-    if not bool then
-        for i,v in pairs(self.Objects) do
-            if v.Type == "Box" then --fov circle etc
-                if v.Temporary then
-                    v:Remove()
-                else
-                    for i,v in pairs(v.Components) do
-                        v.Visible = false
+                            GlowVar = Instance.new("BoxHandleAdornment", v)
+                            GlowVar.Name = "VisibleBox"
+                            GlowVar.AlwaysOnTop = false
+                            GlowVar.ZIndex = 3
+                            GlowVar.Adornee = v
+                            GlowVar.Color3 = Lowfi.ChamColor2
+                            GlowVar.Size = v.Size + Vector3.new(0.07, 0.07, 0.07)
+                        end
                     end
                 end
             end
-        end
-    end
-end
-
-function ESP:GetBox(obj)
-    return self.Objects[obj]
-end
-
-function ESP:AddObjectListener(parent, options)
-    local function NewListener(c)
-        if type(options.Type) == "string" and c:IsA(options.Type) or options.Type == nil then
-            if type(options.Name) == "string" and c.Name == options.Name or options.Name == nil then
-                if not options.Validator or options.Validator(c) then
-                    local box = ESP:Add(c, {
-                        PrimaryPart = type(options.PrimaryPart) == "string" and c:WaitForChild(options.PrimaryPart) or type(options.PrimaryPart) == "function" and options.PrimaryPart(c),
-                        Color = type(options.Color) == "function" and options.Color(c) or options.Color,
-                        ColorDynamic = options.ColorDynamic,
-                        Name = type(options.CustomName) == "function" and options.CustomName(c) or options.CustomName,
-                        IsEnabled = options.IsEnabled,
-                        RenderInNil = options.RenderInNil
-                    })
-                    --TODO: add a better way of passing options
-                    if options.OnAdded then
-                        coroutine.wrap(options.OnAdded)(box)
+        else
+            for i, v in pairs(Data.Character:GetChildren()) do
+                if v:IsA("BasePart") and v.Transparency ~= 1 then
+                    if v:FindFirstChild("Box") then
+                        v["Box"]:Destroy()
+                    end
+                    if v:FindFirstChild("VisibleBox") then
+                        v["VisibleBox"]:Destroy()
                     end
                 end
             end
-        end
-    end
-
-    if options.Recursive then
-        parent.DescendantAdded:Connect(NewListener)
-        for i,v in pairs(parent:GetDescendants()) do
-            coroutine.wrap(NewListener)(v)
-        end
-    else
-        parent.ChildAdded:Connect(NewListener)
-        for i,v in pairs(parent:GetChildren()) do
-            coroutine.wrap(NewListener)(v)
-        end
-    end
-end
-
-local boxBase = {}
-boxBase.__index = boxBase
-
-function boxBase:Remove()
-    ESP.Objects[self.Object] = nil
-    for i,v in pairs(self.Components) do
-        v.Visible = false
-        v:Remove()
-        self.Components[i] = nil
-    end
-end
-
-function boxBase:Update()
-    if not self.PrimaryPart then
-        --warn("not supposed to print", self.Object)
-        return self:Remove()
-    end
-
-    local color
-    if ESP.Highlighted == self.Object then
-       color = ESP.HighlightColor
-    else
-        color = self.Color or self.ColorDynamic and self:ColorDynamic() or ESP:GetColor(self.Object) or ESP.Color
-    end
-
-    local allow = true
-    if ESP.Overrides.UpdateAllow and not ESP.Overrides.UpdateAllow(self) then
-        allow = false
-    end
-    if self.Player and not ESP.TeamMates and ESP:IsTeamMate(self.Player) then
-        allow = false
-    end
-    if self.Player and not ESP.Players then
-        allow = false
-    end
-    if self.IsEnabled and (type(self.IsEnabled) == "string" and not ESP[self.IsEnabled] or type(self.IsEnabled) == "function" and not self:IsEnabled()) then
-        allow = false
-    end
-    if not workspace:IsAncestorOf(self.PrimaryPart) and not self.RenderInNil then
-        allow = false
-    end
-
-    if not allow then
-        for i,v in pairs(self.Components) do
-            v.Visible = false
-        end
-        return
-    end
-
-    if ESP.Highlighted == self.Object then
-        color = ESP.HighlightColor
-    end
-
-    --calculations--
-    local cf = self.PrimaryPart.CFrame
-    if ESP.FaceCamera then
-        cf = CFrame.new(cf.p, cam.CFrame.p)
-    end
-    local size = self.Size
-    local locs = {
-        TopLeft = cf * ESP.BoxShift * CFrame.new(size.X/2,size.Y/2,0),
-        TopRight = cf * ESP.BoxShift * CFrame.new(-size.X/2,size.Y/2,0),
-        BottomLeft = cf * ESP.BoxShift * CFrame.new(size.X/2,-size.Y/2,0),
-        BottomRight = cf * ESP.BoxShift * CFrame.new(-size.X/2,-size.Y/2,0),
-        TagPos = cf * ESP.BoxShift * CFrame.new(0,size.Y/2,0),
-        Torso = cf * ESP.BoxShift
-    }
-
-    if ESP.Boxes then
-        local TopLeft, Vis1 = WorldToViewportPoint(cam, locs.TopLeft.p)
-        local TopRight, Vis2 = WorldToViewportPoint(cam, locs.TopRight.p)
-        local BottomLeft, Vis3 = WorldToViewportPoint(cam, locs.BottomLeft.p)
-        local BottomRight, Vis4 = WorldToViewportPoint(cam, locs.BottomRight.p)
-
-        if self.Components.Quad then
-            if Vis1 or Vis2 or Vis3 or Vis4 then
-                self.Components.Quad.Visible = true
-                self.Components.Quad.PointA = Vector2.new(TopRight.X, TopRight.Y)
-                self.Components.Quad.PointB = Vector2.new(TopLeft.X, TopLeft.Y)
-                self.Components.Quad.PointC = Vector2.new(BottomLeft.X, BottomLeft.Y)
-                self.Components.Quad.PointD = Vector2.new(BottomRight.X, BottomRight.Y)
-                self.Components.Quad.Color = color
-            else
-                self.Components.Quad.Visible = false
-            end
-        end
-    else
-        self.Components.Quad.Visible = false
-    end
-
-    if ESP.Names then
-        local TagPos, Vis5 = WorldToViewportPoint(cam, locs.TagPos.p)
-        
-        if Vis5 then
-            self.Components.Name.Visible = true
-            self.Components.Name.Position = Vector2.new(TagPos.X, TagPos.Y)
-            self.Components.Name.Text = self.Name
-            self.Components.Name.Color = color
             
-            self.Components.Distance.Visible = true
-            self.Components.Distance.Position = Vector2.new(TagPos.X, TagPos.Y + 14)
-            self.Components.Distance.Text = math.floor((cam.CFrame.p - cf.p).magnitude) .."m away"
-            self.Components.Distance.Color = color
-        else
-            self.Components.Name.Visible = false
-            self.Components.Distance.Visible = false
+            return BoxVar, GlowVar
         end
-    else
-        self.Components.Name.Visible = false
-        self.Components.Distance.Visible = false
     end
-    
-    if ESP.Tracers then
-        local TorsoPos, Vis6 = WorldToViewportPoint(cam, locs.Torso.p)
+}
 
-        if Vis6 then
-            self.Components.Tracer.Visible = true
-            self.Components.Tracer.From = Vector2.new(TorsoPos.X, TorsoPos.Y)
-            self.Components.Tracer.To = Vector2.new(cam.ViewportSize.X/2,cam.ViewportSize.Y/ESP.AttachShift)
-            self.Components.Tracer.Color = color
-        else
-            self.Components.Tracer.Visible = false
-        end
-    else
-        self.Components.Tracer.Visible = false
+local function NewDrawing(Object, Props)
+    local New = Drawing.new(Object)
+    Props = Props or {}
+    for i, v in pairs(Props) do
+        New[i] = v
     end
+    return New
 end
 
-function ESP:Add(obj, options)
-    if not obj.Parent and not options.RenderInNil then
-        return warn(obj, "has no parent")
+function Lowfi:Add(P, User, Obj)
+    if Obj == nil then
+        return 
     end
 
-    local box = setmetatable({
-        Name = options.Name or obj.Name,
-        Type = "Box",
-        Color = options.Color --[[or self:GetColor(obj)]],
-        Size = options.Size or self.BoxSize,
-        Object = obj,
-        Player = options.Player or plrs:GetPlayerFromCharacter(obj),
-        PrimaryPart = options.PrimaryPart or obj.ClassName == "Model" and (obj.PrimaryPart or obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildWhichIsA("BasePart")) or obj:IsA("BasePart") and obj,
-        Components = {},
-        IsEnabled = options.IsEnabled,
-        Temporary = options.Temporary,
-        ColorDynamic = options.ColorDynamic,
-        RenderInNil = options.RenderInNil
-    }, boxBase)
-
-    if self:GetBox(obj) then
-        self:GetBox(obj):Remove()
-    end
-
-    box.Components["Quad"] = Draw("Quad", {
+    local Box = NewDrawing("Square", {
         Thickness = self.Thickness,
-        Color = color,
+        Color = Lowfi.BoxesColor,
         Transparency = 1,
         Filled = false,
-        Visible = self.Enabled and self.Boxes
+        Visible = false
     })
-    box.Components["Name"] = Draw("Text", {
-		Text = box.Name,
-		Color = box.Color,
-		Center = true,
-		Outline = true,
-        Size = 19,
-        Visible = self.Enabled and self.Names
-	})
-	box.Components["Distance"] = Draw("Text", {
-		Color = box.Color,
-		Center = true,
-		Outline = true,
-        Size = 19,
-        Visible = self.Enabled and self.Names
-	})
-	
-	box.Components["Tracer"] = Draw("Line", {
-		Thickness = ESP.Thickness,
-		Color = box.Color,
+
+    local Name = NewDrawing("Text", {
+        Text = User,
+        Color = Lowfi.NamesColor,
         Transparency = 1,
-        Visible = self.Enabled and self.Tracers
+        Outline = false,
+        Center = true,
+        Visible = false,
+        Size = 14
     })
-    self.Objects[obj] = box
-    
-    obj.AncestryChanged:Connect(function(_, parent)
-        if parent == nil and ESP.AutoRemove ~= false then
-            box:Remove()
-        end
-    end)
-    obj:GetPropertyChangedSignal("Parent"):Connect(function()
-        if obj.Parent == nil and ESP.AutoRemove ~= false then
-            box:Remove()
-        end
-    end)
 
-    local hum = obj:FindFirstChildOfClass("Humanoid")
-	if hum then
-        hum.Died:Connect(function()
-            if ESP.AutoRemove ~= false then
-                box:Remove()
+    local Distance = NewDrawing("Text", {
+        Text = "0m",
+        Color = Lowfi.DistanceColor,
+        Transparency = 1,
+        Outline = false,
+        Center = true,
+        Visible = false,
+        Size = 14
+    })
+
+    local Env = RunService.RenderStepped:Connect(function()
+        local RootPos, RootVis = WorldToViewPortPoint(CurrentCamera, Obj.Position)
+        local LegPos = WorldToViewPortPoint(CurrentCamera, Obj.Position - V3New(0, 6, 0))
+        local GetDistance = (CurrentCamera.CFrame.p - Obj.Position).Magnitude
+
+        if RootVis and Module.Network(P) then
+            Module.Cham(P, Lowfi.Cham)
+
+            if Box then
+                if Lowfi.Boxes then
+                    Box.Size = V2New(2750 / RootPos.Z, 4000 / RootPos.Z)
+                    Box.Position = V2New(RootPos.X - Box.Size.X / 2, RootPos.Y - Box.Size.Y / 2)
+                    Box.Color = Lowfi.BoxesColor
+                    Box.Visible = true  
+                else
+                    Box.Visible = false
+                end
             end
-		end)
-    end
 
-    return box
+            if Name then
+                if Lowfi.Names then
+                    Name.Position = V2New(Box.Position.X + (Box.Size.X / 2), Box.Position.Y - 16.5)
+                    Name.Color = Lowfi.NamesColor
+                    Name.Visible = true  
+                else
+                    Name.Visible = false
+                end
+            end
+
+            if Distance then
+                if Lowfi.Distance then
+                    Distance.Text = tostring(math.floor(GetDistance) .. "m")
+                    Distance.Position = V2New(Box.Position.X + (Box.Size.X / 2), Box.Position.Y + Box.Size.Y)
+                    Distance.Color = Lowfi.DistanceColor
+                    Distance.Visible = true
+                else
+                    Distance.Visible = false
+                end
+            end
+        else
+            Box.Visible = false
+            Name.Visible = false
+            Distance.Visible = false
+        end
+    end)
+
+    Obj.AncestryChanged:Connect(function(_, Parent)
+        if Parent == nil then
+            Env:Disconnect()
+            wait(0.1)
+            Env = nil
+            repeat wait() until Env == nil
+            Box:Remove()
+            Name:Remove()
+            Distance:Remove()
+        end
+    end)
+
+    Obj:GetPropertyChangedSignal("Parent"):Connect(function()
+        if Obj.Parent == nil then
+            Env:Disconnect()
+            wait(0.1)
+            Env = nil
+            repeat wait() until Env == nil
+            Box:Remove()
+            Name:Remove()
+            Distance:Remove()
+        end
+    end)
 end
 
-local function CharAdded(char)
-    local p = plrs:GetPlayerFromCharacter(char)
-    if not char:FindFirstChild("HumanoidRootPart") then
-        local ev
-        ev = char.ChildAdded:Connect(function(c)
-            if c.Name == "HumanoidRootPart" then
-                ev:Disconnect()
-                ESP:Add(char, {
-                    Name = p.Name,
-                    Player = p,
-                    PrimaryPart = c
-                })
+local function CharAdded(Char)
+    local Plr = Players:GetPlayerFromCharacter(Char)
+    if not Char:FindFirstChild("HumanoidRootPart") then
+        local Env
+        Env = Char.ChildAdded:Connect(function(Child)
+            if Child.Name == "HumanoidRootPart" then
+                Env:Disconnect()
+                Lowfi:Add(Plr, Plr.Name, Child)
             end
         end)
     else
-        ESP:Add(char, {
-            Name = p.Name,
-            Player = p,
-            PrimaryPart = char.HumanoidRootPart
-        })
+        Lowfi:Add(Plr, Plr.Name, Char.HumanoidRootPart)
     end
 end
-local function PlayerAdded(p)
-    p.CharacterAdded:Connect(CharAdded)
-    if p.Character then
-        coroutine.wrap(CharAdded)(p.Character)
+
+local function PlayerAdded(P)
+    P.CharacterAdded:Connect(CharAdded)
+    if P.Character then
+        coroutine.wrap(CharAdded)(P.Character)
     end
 end
-plrs.PlayerAdded:Connect(PlayerAdded)
-for i,v in pairs(plrs:GetPlayers()) do
-    if v ~= plr then
+
+Players.PlayerAdded:Connect(PlayerAdded)
+
+for i, v in pairs(Players:GetPlayers()) do
+    if v ~= Player then
         PlayerAdded(v)
     end
 end
 
-game:GetService("RunService").RenderStepped:Connect(function()
-    cam = workspace.CurrentCamera
-    for i,v in (ESP.Enabled and pairs or ipairs)(ESP.Objects) do
-        if v.Update then
-            local s,e = pcall(v.Update, v)
-            if not s then warn("[EU]", e, v.Object:GetFullName()) end
-        end
-    end
-end)
-
-return ESP
+return Lowfi
